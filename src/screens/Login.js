@@ -13,17 +13,39 @@ import colors from "../styles/colors";
 
 import InputField from "../components/form/InputField";
 import NextArrowButton from "../components/buttons/NextArrowButton";
+import Notification from "../components/Notification";
 
 export default class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      formValid: true
+    };
+  }
   handlerNextButton = () => {
     alert("Handler Next");
   };
+
+  handleCloseNotification = () => {
+    this.setState({
+      formValid: true
+    });
+  };
+
   render() {
+    const { formValid } = this.state;
+    const showNotification = formValid ? false : true;
+    const background = formValid ? colors.green01 : colors.darkOrange;
     return (
-      <KeyboardAvoidingView 
-        style={styles.wrapper}
+      <KeyboardAvoidingView
+        style={[
+          {
+            backgroundColor: background
+          },
+          styles.wrapper
+        ]}
         behavior="padding"
-    >
+      >
         <View style={styles.scrollViewWrapper}>
           <ScrollView style={styles.scrollView}>
             <Text style={styles.loginHeader}>Log in</Text>
@@ -49,6 +71,16 @@ export default class Login extends Component {
           <View style={styles.nextButton}>
             <NextArrowButton handlerNextButton={this.handlerNextButton} />
           </View>
+
+          <View>
+            <Notification
+              showNotification={showNotification}
+              handleCloseNotification={this.handleCloseNotification}
+              type="Error"
+              firstLine="Those credentials don´t look right"
+              secondLine="Please try again"
+            />
+          </View>
         </View>
       </KeyboardAvoidingView>
     );
@@ -57,8 +89,7 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
   wrapper: {
-    flex: 1,
-    backgroundColor: colors.green01
+    flex: 1
   },
   scrollViewWrapper: {
     marginTop: 70,
@@ -76,9 +107,9 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     marginBottom: 40
   },
-  nextButton:{
-      alignItems: 'flex-end',
-      right: 20,
-      bottom: 20,
-  },
+  nextButton: {
+    alignItems: "flex-end",
+    right: 20,
+    bottom: 20
+  }
 });
