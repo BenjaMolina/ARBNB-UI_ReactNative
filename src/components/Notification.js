@@ -15,7 +15,7 @@ class Notification extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      positionValue: new Animated.Value(60)
+      positionValue: new Animated.Value(-60)
     };
   }
 
@@ -23,7 +23,7 @@ class Notification extends Component {
     const { positionValue } = this.state;
     Animated.timing(positionValue, {
       toValue: value,
-      duration: 400,
+      duration: 300,
       velocity: 3,
       tension: 2,
       friction: 8,
@@ -41,17 +41,13 @@ class Notification extends Component {
 
     showNotification
       ? this.animatedNotification(0)
-      : this.animatedNotification(60);
+      : this.animatedNotification(-60);
 
     return (
       <Animated.View
         style={[
           {
-            transform: [
-              {
-                translateY: positionValue
-              }
-            ]
+            marginBottom: positionValue              
           },
           styles.wrapper
         ]}
