@@ -5,7 +5,8 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -32,6 +33,8 @@ export default class Login extends Component {
   handlerNextButton = () => {
     this.setState({loadingVisble: true})
 
+    alert(this.state.validEmail);
+
     setTimeout(()=> {      
       if(this.state.emailAddress === 'hello@imandy.ie' && this.state.validPassword){
         this.setState({ formValid: true, loadingVisble: false});
@@ -48,26 +51,22 @@ export default class Login extends Component {
   };
 
   handleEmailChange = (email) => {
+
     const emailCheckRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     
-    this.setState({
-      emailAddress: email
-    })
+    this.setState({ emailAddress: email })
 
     if(!this.state.validEmail){
       if(emailCheckRegex.test(email)){
-        this.setState({
-          validEmail: true
-        })
+        this.setState({validEmail: true })
 
       }else{
         if(!emailCheckRegex.test(email)){
 
-          this.setState({
-            validEmail: false,
-          })
+          this.setState({ validEmail: false })
         }
       }
+      
     }
   }
 
@@ -91,7 +90,7 @@ export default class Login extends Component {
   }
 
   render() {
-    const { formValid,loadingVisble } = this.state;
+    const { formValid,loadingVisble, validEmail, validPassword } = this.state;
     const showNotification = formValid ? false : true;
     const background = formValid ? colors.green01 : colors.darkOrange;
      const notificationMarginTop = showNotification ? 10 : 0;
@@ -117,6 +116,8 @@ export default class Login extends Component {
               inputType="email"
               customStyle={{ marginBottom: 30 }}
               onChangeText={this.handleEmailChange}
+              showCheckmark={validEmail}
+              autoFocus={true}
             />
             <InputField
               labelText="PASSWORD"
@@ -127,6 +128,7 @@ export default class Login extends Component {
               inputType="password"
               customStyle={{ marginBottom: 30 }}
               onChangeText={this.handlePasswordChange}
+              showCheckmark={validPassword}
             />
           </ScrollView>
           <View style={styles.nextButton}>
