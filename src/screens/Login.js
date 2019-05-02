@@ -9,39 +9,45 @@ import {
   Platform
 } from "react-native";
 
-import Icon from "react-native-vector-icons/FontAwesome";
+import { connect } from "react-redux";
+import { logIn } from "../redux/actions/loggedOut";
+// import { bindActionCreators } from "redux";
+// import { ActionCreators } from "../redux/actions";
+
 import colors from "../styles/colors";
 
 import InputField from "../components/form/InputField";
 import NextArrowButton from "../components/buttons/NextArrowButton";
 import Notification from "../components/Notification";
 
-import Loader from '../components/Loader';
+import Loader from "../components/Loader";
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       formValid: true,
       validEmail: false,
       validPassword: false,
-      emailAddress: '',
-      loadingVisble: false,
-
+      emailAddress: "",
+      loadingVisble: false
     };
   }
   handlerNextButton = () => {
-    this.setState({loadingVisble: true})
+    this.setState({ loadingVisble: true });
 
     alert(this.state.validEmail);
 
-    setTimeout(()=> {      
-      if(this.state.emailAddress === 'hello@imandy.ie' && this.state.validPassword){
-        this.setState({ formValid: true, loadingVisble: false});
-      }else{
-        this.setState({formValid: false, loadingVisble: false});
+    setTimeout(() => {
+      if (
+        this.state.emailAddress === "hello@imandy.ie" &&
+        this.state.validPassword
+      ) {
+        this.setState({ formValid: true, loadingVisble: false });
+      } else {
+        this.setState({ formValid: false, loadingVisble: false });
       }
-    },2000)
+    }, 2000);
   };
 
   handleCloseNotification = () => {
@@ -50,50 +56,45 @@ export default class Login extends Component {
     });
   };
 
-  handleEmailChange = (email) => {
-
+  handleEmailChange = email => {
     const emailCheckRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    
-    this.setState({ emailAddress: email })
 
-    if(!this.state.validEmail){
-      if(emailCheckRegex.test(email)){
-        this.setState({validEmail: true })
+    this.setState({ emailAddress: email });
 
-      }else{
-        if(!emailCheckRegex.test(email)){
-
-          this.setState({ validEmail: false })
+    if (!this.state.validEmail) {
+      if (emailCheckRegex.test(email)) {
+        this.setState({ validEmail: true });
+      } else {
+        if (!emailCheckRegex.test(email)) {
+          this.setState({ validEmail: false });
         }
       }
-      
     }
-  }
+  };
 
-  handlePasswordChange = (password)=> {
-
-    if(!this.state.validPassword){
-      if(password.length > 4){
-        this.setState({validPassword: true});
+  handlePasswordChange = password => {
+    if (!this.state.validPassword) {
+      if (password.length > 4) {
+        this.setState({ validPassword: true });
       }
-    }else if( password.length <= 4){
-      this.setState({validPassword: false});
+    } else if (password.length <= 4) {
+      this.setState({ validPassword: false });
     }
-  }
+  };
 
   toggleNextButtonState = () => {
-    const { validEmail, validPassword} = this.state; 
-    if(validEmail && validPassword){
+    const { validEmail, validPassword } = this.state;
+    if (validEmail && validPassword) {
       return false;
     }
     return true;
-  }
+  };
 
   render() {
-    const { formValid,loadingVisble, validEmail, validPassword } = this.state;
+    const { formValid, loadingVisble, validEmail, validPassword } = this.state;
     const showNotification = formValid ? false : true;
     const background = formValid ? colors.green01 : colors.darkOrange;
-     const notificationMarginTop = showNotification ? 10 : 0;
+    const notificationMarginTop = showNotification ? 10 : 0;
     return (
       <KeyboardAvoidingView
         style={[
@@ -131,12 +132,11 @@ export default class Login extends Component {
               showCheckmark={validPassword}
             />
           </ScrollView>
-          <View style={styles.nextButton}>
-            <NextArrowButton 
-              handlerNextButton={this.handlerNextButton} 
-              disabled={this.toggleNextButtonState()}
-            />
-          </View>
+
+          <NextArrowButton
+            handlerNextButton={this.handlerNextButton}
+            disabled={this.toggleNextButtonState()}
+          />
 
           <View
             style={[
@@ -155,10 +155,7 @@ export default class Login extends Component {
             />
           </View>
         </View>
-        <Loader
-            visible={loadingVisble}
-            animationType="fade"
-        />
+        <Loader visible={loadingVisble} animationType="fade" />
       </KeyboardAvoidingView>
     );
   }
@@ -184,13 +181,24 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     marginBottom: 40
   },
-  nextButton: {
-    alignItems: "flex-end",
-    right: 20,
-    bottom: 20
-  },
   notificationWrapper: {
-    position: 'absolute',
-    bottom: 0,
-  },
+    position: "absolute",
+    bottom: 0
+  }
 });
+
+const mapStateToProps = state => ({
+  loggedInStatus: state.loggedInStatus
+});
+
+// const mapDispatchToProps = dispatch => {
+//   return bindActionCreators(ActionCreators, dispatch);
+// };
+
+// export default Login;
+// export default connect()(Login)
+export default connect(
+  mapStateToProps,
+  { logIn }
+  // mapDispatchToProps
+)(Login);
